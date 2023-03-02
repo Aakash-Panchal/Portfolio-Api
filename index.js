@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 app.use("/api/admin", authRoutes);
 app.use("/api/projects", ProjecRoutes);
 app.use("/api/sendemail", EmailRoutes);
-app.use("/images", express.static("images"));
+app.use("/images", express.static(path.join("Images")));
 
 const database = mongoose.connection;
 
