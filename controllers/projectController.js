@@ -57,10 +57,8 @@ const AddProject = async (req, res) => {
       url: url,
     });
 
-    console.log(projects);
-
     // Send Project Details in Database
-    // await projects.save();
+    await projects.save();
     res.status(201).send("Project Added");
   } catch (error) {
     console.log(error);
