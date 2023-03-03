@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const ProjecRoutes = require("./routes/ProjectRoutes");
 const EmailRoutes = require("./routes/EmailRoute");
+const MediaRoutes = require("./routes/mediaRoutes");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
@@ -20,6 +21,7 @@ app.use(cors(corsOptions));
 app.use("/api/admin", authRoutes);
 app.use("/api/projects", ProjecRoutes);
 app.use("/api/sendemail", EmailRoutes);
+app.use("/api/media", MediaRoutes);
 app.use("/images", express.static(__dirname + "/Images"));
 
 const database = mongoose.connection;
