@@ -16,7 +16,7 @@ const AddProject = async (req, res) => {
       url,
     } = req.body;
 
-    //Check if project already exist
+    // Check if project already exist
     const checkProject = await Projects.findOne({ projectTitle });
     if (checkProject)
       return res
@@ -28,15 +28,17 @@ const AddProject = async (req, res) => {
       await cloudninary.uploads(path, "Project Images");
 
     let ProjectImages = [];
-    const { path, filename } = req.files.thumbnail[0];
+    const { path } = req.files.thumbnail[0];
     const projectThumbnailurl = await uploader(path);
-    const projectThumbnail = { url: projectThumbnailurl.url, img: filename };
+    fs.unlinkSync(path);
+    const projectThumbnail = { url: projectThumbnailurl.url };
     const images = req.files.ProjectImages;
 
     for (const file of images) {
-      const { filename } = file;
+      const { path } = file;
       const filePath = await uploader(path);
-      ProjectImages.push({ url: filePath.url, img: filename });
+      fs.unlinkSync(path);
+      ProjectImages.push({ url: filePath.url });
     }
 
     // Replace space from with _ in url
@@ -106,15 +108,6 @@ const DeleteProject = async (req, res) => {
     //Delete Project by id
     const id = req.params.id;
     const project = await Projects.findByIdAndDelete(id);
-
-    //Delete Imaegs From database
-    const images = project.ProjectImages;
-    const thumbnail = project.ProjectThumbnail[0].img;
-    fs.unlinkSync("Images/" + thumbnail);
-
-    for (const image of images) {
-      fs.unlinkSync("Images/" + image.img);
-    }
 
     res.send(`Project ${project.projectTitle} has been deleted.`);
   } catch (error) {

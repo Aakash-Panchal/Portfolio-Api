@@ -5,9 +5,10 @@ const fs = require("fs");
 const AddMedia = async (req, res) => {
   try {
     const uploader = async (path) => await cloudninary.uploads(path, "Assets");
-    const { filename, path } = req.file;
+    const { path } = req.file;
     const mediaUrl = await uploader(path);
-    const media = { url: mediaUrl.url, img: filename };
+    fs.unlinkSync(path);
+    const media = { url: mediaUrl.url };
     const Media = new MediaModel({
       assets: media,
     });
@@ -33,7 +34,6 @@ const deleteMedia = async (req, res) => {
   try {
     const id = req.params.id;
     const media = await MediaModel.findByIdAndDelete(id);
-    fs.unlinkSync("Images/" + media.assets[0].img);
 
     res.send(`Media has been deleted.`);
   } catch (error) {
