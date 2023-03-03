@@ -1,5 +1,6 @@
 const Projects = require("../models/projectModel");
 const cloudninary = require("../middleware/cloudinary");
+const fs = require("fs");
 
 const AddProject = async (req, res) => {
   try {
@@ -106,9 +107,19 @@ const DeleteProject = async (req, res) => {
     const id = req.params.id;
     const project = await Projects.findByIdAndDelete(id);
 
+    //Delete Imaegs From database
+    const images = project.ProjectImages;
+    const thumbnail = project.ProjectThumbnail[0].img;
+    fs.unlinkSync("Images/" + thumbnail);
+
+    for (const image of images) {
+      fs.unlinkSync("Images/" + image.img);
+    }
+
     res.send(`Project ${project.projectTitle} has been deleted.`);
   } catch (error) {
     res.send(error);
+    console.log(error);
   }
 };
 
